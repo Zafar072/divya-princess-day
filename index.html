@@ -61,9 +61,32 @@ h1,h2{ text-shadow:0 5px 24px #0a052a55}
 @media(max-width:380px){.castle-art{width:88%}.princess-art{width:205px}}
 @media(prefers-reduced-motion:reduce){.btn:before{display:none}}
 
+
+.music-dock{position:fixed;right:13px;bottom:14px;z-index:10;display:flex;align-items:center;gap:9px;padding:9px 12px;border:1px solid #ffffff66;border-radius:999px;background:#241044dd;backdrop-filter:blur(12px);box-shadow:0 8px 28px #08031f77}
+.music-dock button{border:0;background:linear-gradient(120deg,#ff79bd,#bd50bd);color:white;width:38px;height:38px;border-radius:50%;font-size:1rem}
+.music-label{font-size:.68rem;color:#ffe8f6;max-width:115px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.memories{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+.memory{margin:0;padding:7px 7px 12px;background:#fff7fb;border:1px solid #fff;border-radius:13px;box-shadow:0 12px 28px #0b042d66;transform:rotate(-1deg)}
+.memory:nth-child(2){transform:rotate(1.5deg);margin-top:15px}
+.memory img{width:100%;height:190px;object-fit:cover;border-radius:8px;display:block}
+.memory figcaption{font-family:'Cormorant Garamond',serif;color:#754565;font-size:1.1rem;margin-top:8px}
+.memory-note{font-size:.78rem;color:#f7e4f3}
+.love-note{background:linear-gradient(145deg,#fff9fd,#ffe6f3);color:#754565;border-radius:16px;padding:18px;text-align:left;box-shadow:0 12px 30px #0b042d55;margin:14px 0}
+.love-note p{color:#754565;font-family:'Cormorant Garamond',serif;font-size:1.2rem;white-space:pre-line}
+.heart-burst{position:fixed;z-index:20;pointer-events:none;font-size:22px;animation:heartFly 1.8s ease-out forwards}
+@keyframes heartFly{0%{opacity:1;transform:translate(-50%,-50%) scale(.6)}100%{opacity:0;transform:translate(calc(-50% + var(--dx)),calc(-50% - 130px)) rotate(35deg) scale(1.5)}}
+@media(max-width:390px){.memory img{height:150px}.music-label{max-width:90px}}
+
 </style>
 </head>
 <body>
+
+<div class="music-dock" aria-label="Background music controls">
+<button id="musicToggle" type="button" aria-label="Play background music">▶</button>
+<span class="music-label" id="musicStatus">A little melody ♡</span>
+<audio id="bgMusic" src="background-music.mp3" preload="none" loop></audio>
+</div>
+
 <div class="progress" id="progress"></div><div id="stars"></div><div id="floaties"></div>
 <main>
 <section class="screen active" id="page0">
@@ -165,7 +188,28 @@ Never stop being you. ❤️</textarea>
   <div class="giftbox" id="giftbox">🎁</div>
   <div><button class="btn" id="giftButton" onclick="openGift()">Unwrap Your Gift ♡</button></div>
   <div class="gift-reveal" id="giftReveal"><div style="font-size:2.7rem">💝</div><h3 class="script" style="font-size:1.8rem;margin:4px">Your gift is this reminder…</h3><p>You are precious. You are appreciated. And you deserve a life full of moments that make your heart smile.</p><p style="font-size:1.5rem">🌸✨💗</p></div>
-  <button class="btn ghost" onclick="go(6)">One More Surprise →</button>
+  <button class="btn ghost" onclick="goExtra('page-extra-memories')">See Our Memories →</button>
+</section>
+
+
+<section class="screen" id="page-extra-memories">
+<div class="kicker">Little moments, big feelings</div><h2>Our Little Memory Corner 📸</h2>
+<p class="sub">Two faces, two little worlds, and a story still being written.</p>
+<div class="memories">
+<figure class="memory"><img src="zafar-photo.jpg" alt="Zafar's photo"><figcaption>Someone who cares ♡</figcaption></figure>
+<figure class="memory"><img src="divya-photo.jpg" alt="Divya's photo"><figcaption>Someone very special ♡</figcaption></figure>
+</div>
+<p class="memory-note">A little gallery made with care. Add your favourite shared photo here whenever you have one.</p>
+<button class="btn" onclick="goExtra('page-extra-letter')">A message for you →</button>
+</section>
+<section class="screen" id="page-extra-letter">
+<div class="kicker">A message just for you</div><h2>Divya, This Is for You 💌</h2>
+<div class="love-note"><p>I wanted to make something that feels a little like you: warm, lovely, and impossible to forget.
+
+Even from far away, you can make an ordinary day feel special. I hope this little corner of the internet makes you smile.
+
+You deserve kindness, happiness, and all the beautiful things life has waiting for you. ❤️</p></div>
+<button class="btn" onclick="goExtra('page6')">Read my promise →</button>
 </section>
 
 <section class="screen" id="page6">
@@ -219,6 +263,28 @@ function burst(){for(let i=0;i<24;i++){let e=document.createElement('span');e.cl
 for(let i=0;i<34;i++){let s=document.createElement('span');s.className='star';s.textContent='✦';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*100+'%';s.style.fontSize=(5+Math.random()*9)+'px';s.style.animationDelay=(Math.random()*3)+'s';document.getElementById('stars').appendChild(s);}
 setInterval(()=>{let e=document.createElement('span');e.className='floaty';e.textContent=['♡','✧','🌸'][Math.floor(Math.random()*3)];e.style.left=Math.random()*100+'%';e.style.fontSize=(12+Math.random()*12)+'px';e.style.animationDuration=(6+Math.random()*4)+'s';document.getElementById('floaties').appendChild(e);setTimeout(()=>e.remove(),10500)},1100);
 document.getElementById('progress').style.width=(1/total*100)+'%';
+
+function goExtra(id){
+ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+ const target=document.getElementById(id); if(target){target.classList.add('active');}
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+const audioEl=document.getElementById('bgMusic');
+const musicBtn=document.getElementById('musicToggle');
+const musicStatus=document.getElementById('musicStatus');
+async function toggleMusic(){
+ try{
+  if(audioEl.paused){await audioEl.play();musicBtn.textContent='Ⅱ';musicBtn.setAttribute('aria-label','Pause background music');musicStatus.textContent='Now playing ♡';}
+  else{audioEl.pause();musicBtn.textContent='▶';musicBtn.setAttribute('aria-label','Play background music');musicStatus.textContent='Paused';}
+ }catch(e){musicStatus.textContent='Tap to play music';}
+}
+musicBtn.addEventListener('click',toggleMusic);
+document.addEventListener('click',function(e){
+ if(e.target.closest('button'))return;
+ const heart=document.createElement('span');heart.className='heart-burst';heart.textContent=['💗','💕','💖','✨'][Math.floor(Math.random()*4)];
+ heart.style.left=e.clientX+'px';heart.style.top=e.clientY+'px';heart.style.setProperty('--dx',(Math.random()*100-50)+'px');document.body.appendChild(heart);setTimeout(()=>heart.remove(),1900);
+});
+
 </script>
 </body>
 </html>
